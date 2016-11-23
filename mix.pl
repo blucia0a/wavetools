@@ -6,17 +6,19 @@ use Getopt::Long;
 
 my $SampRate = 44100;
 my $SampSize = 2;
+my $IN1File = "";
+my $IN2File = "";
 
 GetOptions ("srate=i"  => \$SampRate,
-            "ssize=i"  => \$SampSize)    
+            "ssize=i"  => \$SampSize,
+            "in1=s"     => \$IN1File,
+            "in2=s"     => \$IN2File)    
 or die("Error in command line arguments\n");
 
-my $IN1File = $ARGV[0];
 my $IN1;
 open($IN1,'<', $IN1File);
 binmode($IN1,":raw") || die "cannot binmode IN1";
 
-my $IN2File = $ARGV[1];
 my $IN2;
 open($IN2,'<',$IN2File);
 binmode($IN2,":raw") || die "cannot binmode IN2";

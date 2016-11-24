@@ -1,5 +1,6 @@
-ShYnth - A shell synth - Brandon Lucia 2016
-===========================================
+ShYnth - A shell synth 
+======================
+#### Brandon Lucia 2016
 
 A 16-bit, command-line, Unix-style, modular synthesizer.
 

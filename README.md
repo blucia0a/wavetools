@@ -22,7 +22,7 @@ Use `sox` to make noise!  `play.sh` is a fixed command line for 16-bit, mono,
 
 The main mechanism for patching modules is process redirection `<( ... )`, like
 
-```./mix.pl -in1 <(./wave.pl -wave sin -freq 440 -amp 0.5) \
+```./mix.pl -in1 <(./wave.pl -wave sin -freq 440 -amp 0.5) 
             -in2 <(./wave.pl -wave sin -freq 450 -amp 0.5)```
 
 Module List and Parameters

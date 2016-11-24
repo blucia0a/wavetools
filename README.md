@@ -13,6 +13,8 @@ Generate Control signals!
 `./wave.pl -wave tri -freq 10 -freqmod <(./wave -wave tri -freq 1)`
 
 The output of each module is a stream of sample values between 0 and 65536 (16-bit INTMAX).
+When a stream of samples is used as a modulation input, the module being modulated
+uses the stream of samples as a scale factor between 0.0 and 1.0.
 
 Use `sox` to make noise!  `play.sh` is a fixed command line for 16-bit, mono,
 44100Hz audio. (Different bit-width, stereo, and variable audio rate coming soon).

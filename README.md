@@ -27,9 +27,39 @@ The main mechanism for patching modules is process redirection `<( ... )`, like
 ```./mix.pl -in1 <(./wave.pl -wave sin -freq 440 -amp 0.5) 
             -in2 <(./wave.pl -wave sin -freq 450 -amp 0.5)```
 
+The main mechanism for mult-out support (i.e., for a sync'd clock) is a named pipe.
+
+```bash
+
+sync1=/tmp/sync1
+sync2=/tmp/sync2
+
+mkfifo $sync1
+mkfifo $sync2
+
+#Set up the mod mult -- this clock runs to sync1 and sync2
+./wave.pl -wave tri -freq 90 | tee /tmp/sync1 > /tmp/sync2 &
+sync=$!
+
+#Prepare to cleanup the sync wave and pipes when Ctrl+c ends the mix below
+trap "kill $sync; rm /tmp/sync1 /tmp/sync2"
+
+#Route the mult outs to these two waves via sync1 and sync2
+./mix.pl -in1 <(./wave.pl -wave sin -freq 655 -amp 0.6 -freqmod /tmp/sync1) 
+         -in2 <(./wave.pl -wave sin -freq 660 -amp 0.6 -freqmod /tmp/sync2) | play.sh
+
+```
+
 Module List and Parameters
 --------------------------
 * `./mix.pl -in1 <(stream) -in2 <(stream)`
 * `./wave.pl -wave [sin | tri] -freq <Hz> -amp (0.0 - 1.0) -freqmod <(stream) -ampmod <(stream)`
 * `./lpf.pl -in <(stream) -cutoff <Hz> -resonance (0.4ish - 2.0ish) -cutoffmod <(stream)`
 * `./amp.pl -in <(stream) -amp (0.0 - 1.0)`
+
+TODO
+----
+* Add modulation to resonance 
+* Add envelope generator 
+* Add modulation depth parameter and center modulation on specified value
+* Better support for modmult?

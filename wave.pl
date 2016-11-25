@@ -13,16 +13,20 @@ my $F = 440;
 my $A = 1.0;
 my $FMFile = "";
 my $AMFile = "";
+my $FreqModDepth = 0.0;
 my $waveType = 0;
 my $waveTypeArg = "";
+
 
 GetOptions ("freq=i" => \$F,    
             "amp=f"   => \$A,      
             "srate=i"  => \$S,
             "ssize=i"  => \$SampSize,
             "freqmod=s"    => \$FMFile,
+            "freqmoddepth=f"    => \$FreqModDepth,
             "ampmod=s"  =>   \$AMFile,
             "wave=s"  =>   \$waveTypeArg)
+
 or die("Error in command line arguments\n");
 
 if($waveTypeArg eq "sin"){
@@ -65,12 +69,20 @@ my $AMScaleFactor = 1.0;
 while(1){
 
 
+  my $sampfreq = $F;
 
   if( $FMFile ne "" ){
+
     my $fmraw;
+
     read($FM, $fmraw, $SampSize);
+
     my $fmval = unpack "S", $fmraw;
+
     $FMScaleFactor = $fmval / 65536;
+
+    $sampfreq = $F - (0.5 * $F * $FreqModDepth * $FMScaleFactor);
+
   }
  
  
@@ -81,13 +93,18 @@ while(1){
     $AMScaleFactor = $amval / 65536;
   }
 
-  $skip = ($T * ($F * $FMScaleFactor) ) / $S;
+
+  $skip = $T * $sampfreq / $S;
 
   my $samp;
   if($waveType == 0){ 
+
     $samp = ($sinTable[ $i ] * $A * $AMScaleFactor);
+
   }else{
+
     $samp = ($triTable[ $i ] * $A * $AMScaleFactor);
+
   }
 
   print pack 'S', $samp;

@@ -15,6 +15,6 @@ trap "echo \"Shutting down sync wave $sync\"; \
 
 echo "Sync wave is $sync"
 
-lpf.pl -cutoff 500 -resonance 1.5 -cutoffmod <(wave.pl -freq 1 -wave tri) -in <(mix.pl -in1 <(wave.pl -wave sin -freq 655 -amp 0.6 -freqmod /tmp/sync1) \
+lpf.pl -cutoff 500 -resonance 1.5 -cutoffmod <(wave.pl -freq 1 -wave tri) -in <(mix.pl -in1 <(wave.pl -wave sin -freq 655 -amp 0.6 -freqmod /tmp/sync1 -freqmoddepth 1.0) \
          -in2 <(wave.pl -wave sin -freq 660 -amp 0.6 -freqmod /tmp/sync2) )  | play.sh
 

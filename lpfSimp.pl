@@ -8,11 +8,16 @@ my $SampRate = 44100;
 my $SampSize = 2;
 my $IN1File = "";
 my $amp = 1.0;
-my $out = 1.0;
 
-my $sampleSize = 100.0;
-my $sampleWeight= 1.0/$sampleSize;
-my $numSamps = 0;
+my @filter = (-0.00116417, -0.00139094, 0.00195951, 0.00293134, -0.00437535,
+	      -0.00637313, 0.00902803, 0.01248116, -0.0169409, -0.02273977,
+	       0.03045372, 0.04118039, -0.05729369, -0.08500841, 0.14720004,
+	       0.45005217, 0.45005217, 0.14720004, -0.08500841, -0.05729369,
+	       0.04118039, 0.03045372, -0.02273977, -0.0169409, 0.01248116,
+	       0.00902803, -0.00637313, -0.00437535, 0.00293134, 0.00195951,
+	      -0.00139094, -0.00116417);
+
+my $numsamples = 32;
 my @sample;
 
 GetOptions ("srate=i"  => \$SampRate,
@@ -28,8 +33,7 @@ binmode($IN1,":raw") || die "cannot binmode IN1";
 
 binmode(STDOUT,":raw") || die "cannot binmode STDOUT";
 
-my $i = 0;
-for(my $i = 0; $i < 100; $i++){
+for(my $i = 0; $i < $numsamples; $i++){
   $sample[$i] = 0.0;
 }
 while(1){
@@ -38,25 +42,17 @@ while(1){
   read($IN1, $samp1raw, $SampSize); #TODO
   my $samp1 = unpack "S", $samp1raw;
 
-  &addSamp($samp1);
+  #Move samples up by one in the buffer
+  for(my $i = 0; $i < $numsamples-1; $i++){
+    $sample[$i + 1] = $sample[$i];
+  }
+  $sample[0] = $samp1;
  
-  $out = 0.0; 
-  #FIR filter with coefficients [1/3, 1, 1/2] and 8-bit resolution for coeffs
-  for(my $i = 0; $i < $sampleSize; $i++){
-    $out = $out + $sample[$i] * $sampleWeight;
+  my $out = 0.0; 
+  for(my $i = 0; $i < $numsamples; $i++){
+    $out += $sample[$i] * $filter[$i];
   }  
 
   print pack 'S', $out; 
-  #print "".$out."\n"; 
-
-}
-
-sub addSamp{
-
-  #Move samples up by one in the buffer
-  for($i = 0; $i < $sampleSize-1; $i++){
-    $sample[$i + 1] = $sample[$i];
-  }
-  $sample[0] = $_[0];
 
 }

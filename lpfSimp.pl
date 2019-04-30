@@ -9,16 +9,10 @@ my $SampSize = 2;
 my $IN1File = "";
 my $amp = 1.0;
 
-my @filter = (-0.00116417, -0.00139094, 0.00195951, 0.00293134, -0.00437535,
-	      -0.00637313, 0.00902803, 0.01248116, -0.0169409, -0.02273977,
-	       0.03045372, 0.04118039, -0.05729369, -0.08500841, 0.14720004,
-	       0.45005217, 0.45005217, 0.14720004, -0.08500841, -0.05729369,
-	       0.04118039, 0.03045372, -0.02273977, -0.0169409, 0.01248116,
-	       0.00902803, -0.00637313, -0.00437535, 0.00293134, 0.00195951,
-	      -0.00139094, -0.00116417);
-
-my $numsamples = 32;
+my $numsamples = 40;
+my @filter = (0.5,0.2,0.1,0.1,0.1);
 my @sample;
+my @conv;
 
 GetOptions ("srate=i"  => \$SampRate,
             "ssize=i"  => \$SampSize,
@@ -36,6 +30,7 @@ binmode(STDOUT,":raw") || die "cannot binmode STDOUT";
 for(my $i = 0; $i < $numsamples; $i++){
   $sample[$i] = 0.0;
 }
+
 while(1){
 
   my $samp1raw;
@@ -47,11 +42,62 @@ while(1){
     $sample[$i + 1] = $sample[$i];
   }
   $sample[0] = $samp1;
- 
-  my $out = 0.0; 
-  for(my $i = 0; $i < $numsamples; $i++){
-    $out += $sample[$i] * $filter[$i];
-  }  
+
+
+  #print "S: [ ";
+  #for(my $i = 0; $i < $#sample+1; $i++){
+  #  print "".$sample[$i]." "
+  #}
+  #print "]\n";
+
+
+  #|--------$slen + 2*($flen-1)--------|
+  #|--$flen--|                           
+  #|0|0|0|0|*|  0                            
+  #  |0|0|0|*|*|  1                           
+  #    |0|0|*|*|*|  2                         
+  #      |0|*|*|*|*|  3                       
+  #        |*|*|*|*|*|  4  
+  #          |*|*|*|*|*|  5
+  #            |*|*|*|*|*|  6
+  #              |*|*|*|*|*|  7
+  #                |*|*|*|*|*|  8
+  #                  |*|*|*|*|*|  9
+  #                    |*|*|*|*|0| 10
+  #                      |*|*|*|0|0| 11
+  #                        |*|*|0|0|0|  12
+  #                          |*|0|0|0|0|  13
+  #        |0|1|2|3|4|5|6|7|8|9|
+  #        |------$slen--------|
+  #        |old ----------> new| 
+  #
+  #|$flen-1|-------------------|$flen-1|
+  my @filtered = (); # |@filtered| = $slen + $flen - 1
+  for(my $fpos = 0 - $#filter; $fpos <= $#sample; $fpos++){
+
+      my $elemout = 0;
+
+      for(my $i = 0; $i < $#filter+1; $i++){
+
+        if($fpos + $i >= 0 &&  
+           $fpos + $i < $#sample){
+
+          $elemout = $elemout + $sample[$fpos + $i] * $filter[$i];
+
+        }
+
+      }
+
+      push @filtered, $elemout; 
+
+  } 
+
+  my $out = $filtered[$#filter];
+  #print "F: [ ";
+  #for(my $i = 0; $i < $#filtered+1; $i++){
+  #  print "".$filtered[$i]." "
+  #}
+  #print "]\n";
 
   print pack 'S', $out; 
 

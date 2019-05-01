@@ -31,6 +31,7 @@ if($numsamps == 0){
     my $samp1raw;
     read($IN1, $samp1raw, $SampSize); #TODO
     my $samp1 = unpack "S", $samp1raw;
+    $samp1 = 0 if !defined $samp1;
   
     print pack 'S', ($samp1); 
   

@@ -55,7 +55,8 @@ for(my $i = 0; $i < $releaseS; $i++){
   print pack 'S', ($samp); 
 }
 
-
+close STDOUT;
+exit(0);
 
 
 

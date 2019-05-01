@@ -59,7 +59,8 @@ Module List and Parameters
 
 TODO
 ----
-* Add modulation to resonance 
-* Add envelope generator 
-* Add modulation depth parameter and center modulation on specified value
+* Add modulation to resonance (later)
+* Add envelope generator (in progress) 
+* Add modulation depth parameter and center modulation on specified value (later)
 * Better support for modmult?
+* Add trigger module and support in envgen to trigger

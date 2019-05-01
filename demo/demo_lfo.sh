@@ -39,7 +39,7 @@ lpf.pl -in \
   -cutoff 400.0 -resonance 1.4 -cutoffmod <(wave.pl -wave tri -freq 0.15) > /tmp/basspad &
 basspad=$!
 
-mix.pl -in1 <(wave.pl -wave sin -freq 440 -amp 0.4 -freqmoddepth 1.0 -freqmod <(wave.pl -wave sin -freq 0.01 -freqmod <(wave.pl -wave tri -freq 0.1 ) -freqmoddepth 1.0 )) \
+mix.pl -in1 <(lpf.pl -in <(wave.pl -wave sin -freq 440 -amp 0.4 -freqmoddepth 1.0 -freqmod <(wave.pl -wave sin -freq 0.01 -freqmod <(wave.pl -wave tri -freq 0.1 ) -freqmoddepth 1.0 )) -cutoff 300 -resonance 1.4 ) \
 -in2 <(wave.pl -wave sin -freq 600 -amp 0.35 -freqmoddepth 1.0 -freqmod <(wave.pl -wave sin -freq 0.007 -freqmod <(wave.pl -wave tri -freq 0.05 ) -freqmoddepth 1.0 )) > /tmp/highpad &
 highpad=$!
 

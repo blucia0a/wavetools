@@ -60,7 +60,8 @@ Module List and Parameters
 TODO
 ----
 * Add modulation to resonance (later)
-* Add envelope generator (in progress) 
+* --Add envelope generator-- 
+* Make EG restartable
 * Add modulation depth parameter and center modulation on specified value (later)
 * Better support for modmult?
 * Add trigger module and support in envgen to trigger

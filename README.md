@@ -65,3 +65,4 @@ TODO
 * Add modulation depth parameter and center modulation on specified value (later)
 * Better support for modmult?
 * Add trigger module and support in envgen to trigger
+* Figure out why envgen does not work for freqmod

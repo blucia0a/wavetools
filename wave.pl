@@ -14,6 +14,7 @@ my $A = 1.0;
 my $FMFile = "";
 my $AMFile = "";
 my $FreqModDepth = 0.0;
+my $AmpModDepth= 1.0;
 my $waveType = 0;
 my $waveTypeArg = "";
 
@@ -25,6 +26,7 @@ GetOptions ("freq=f" => \$F,
             "freqmod=s"    => \$FMFile,
             "freqmoddepth=f"    => \$FreqModDepth,
             "ampmod=s"  =>   \$AMFile,
+            "ampmoddepth=f"  =>   \$AmpModDepth,
             "wave=s"  =>   \$waveTypeArg)
 
 or die("Error in command line arguments\n");
@@ -82,6 +84,8 @@ while(1){
 
     my $fmval = unpack "S", $fmraw;
 
+    $fmval = 0 if !defined $fmval;
+
     $FMScaleFactor = $fmval / 65536;
 
     $sampfreq = $F - (0.5 * $F * $FreqModDepth * $FMScaleFactor);
@@ -93,8 +97,11 @@ while(1){
     my $amraw;
     read($AM, $amraw, $SampSize); 
     my $amval = unpack "S", $amraw;
+    $amval = 0 if !defined $amval;
     $AMScaleFactor = $amval / 65536;
   }
+ 
+  $AMScaleFactor *= $AmpModDepth;
 
   my $samp;
   if($waveType == 0){ 

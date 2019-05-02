@@ -28,7 +28,6 @@ open($IN1,'<', $IN1File);
 binmode($IN1,":raw") || die "cannot binmode IN1";
 
 my $AM;
-my $AMkeepalive;
 if($AMFile ne ""){
   sysopen($AM,$AMFile,O_RDONLY);
   binmode($AM,":raw") || die "cannot binmode AM";

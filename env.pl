@@ -11,7 +11,7 @@ $|=1;
 my $SampRate = 44100;
 my $SampSize = 2;
 
-my $oneshot = 1;
+my $oneshot = 0;
 my $attack = 1.0;
 my $decay = 1.0;
 my $sustain = 1.0;

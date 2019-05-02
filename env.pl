@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use Getopt::Long;
 use Fcntl;
+use Time::HiRes qw(usleep);
 
 $|=1;
 
@@ -95,6 +96,7 @@ while(1){
       $samp = $susA - (($i / $releaseS) * $susA);
       print pack 'S', ($samp); 
     }
+    usleep(1000000 * $attack + $decay + $sustain + $release);
     $mode = 0;
     if( $oneshot == 1 ){  exit; }
   }else{

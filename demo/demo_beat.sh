@@ -10,6 +10,7 @@ synth.pl \
   -in2 <(wave.pl -wave sin -freq 100 -freqmod <(wave.pl -wave sin -freq 110)) \
   -mixmod <(wave.pl -wave sin -freq 50) \
 ) > $s1 &
+ps1=$!
 
 #high 
 hi=/tmp/hi
@@ -24,6 +25,7 @@ synth.pl \
     -in2 <(wave.pl -wave sin -freq 600 -freqmod <(wave.pl -wave sin -freq 610)) \
   )
 ) > $hi &
+ps2=$!
 
 #high sin with some noise, slow freqmod
 #tril=/tmp/tril
@@ -36,16 +38,17 @@ synth.pl \
 #) > $tril &
 
 #slow on/off as freq fluctuates on tril ("tril beat")
-trilb=/tmp/trilb
-mkfifo $trilb
+#trilb=/tmp/trilb
+#mkfifo $trilb
 
-synth.pl \
-  -ampmod <(wave.pl -wave sqr -amp 1.0 -freq 0.5) \
-  -in <(wave.pl \
-    -wave sin -freq 600 \
-    -freqmod <(wave.pl -wave tri -freq 0.1) \
-    -freqmoddepth 1.0 \
-) > $trilb &
+#synth.pl \
+#  -ampmod <(wave.pl -wave sqr -amp 1.0 -freq 0.5) \
+#  -in <(wave.pl \
+#    -wave sin -freq 600 \
+#    -freqmod <(wave.pl -wave tri -freq 0.1) \
+#    -freqmoddepth 1.0 \
+#) > $trilb &
+#ps3=$!
 
 
 #noise vs. s1 slow square swap
@@ -60,6 +63,7 @@ synth.pl \
     -mixmod <(wave.pl -wave sqr -freq 0.4) \
   ) \
 ) > $s2 &
+ps4=$!
 
 
 #noise vs. hi faster square swap
@@ -74,17 +78,26 @@ synth.pl \
     -mixmod <(wave.pl -wave sqr -freq 0.8) \
   ) \
 ) > $s3 &
+ps5=$!
 
-synth.pl -in <(mix.pl -in1 $s2 -in2 $s3) | play.sh
-#synth.pl -in <(mix.pl \
-#  -in1 <(mix.pl -in1 $s2 -in2 $s3 ) \
-#  -in2 $trilb \
-#) | play.sh
+#synth.pl -in <(mix.pl -in1 $s2 -in2 $s3) | play.sh
+synth.pl -in <(mix.pl \
+  -in1 <(mix.pl -in1 $s2 -in2 $s3 ) \
+  -in2 <(synth.pl \
+    -ampmod <(wave.pl -wave sqr -amp 1.0 -freq 0.5) \
+    -in <(wave.pl \
+      -wave sin -freq 600 \
+      -freqmod <(wave.pl -wave tri -freq 0.1) \
+      -freqmoddepth 1.0 \
+    )\
+  )\
+) | play.sh
 
-killall perl
+kill $ps1 $ps2 $ps3 $ps4 $ps5
+wait $ps1 $ps2 $ps3 $ps4 $ps5
 rm $s1
 rm $s2
 rm $s3
 rm $hi
-#rm $tril
-rm $trilb
+#rm $trilb
+killall perl

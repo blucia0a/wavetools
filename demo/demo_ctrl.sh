@@ -9,37 +9,122 @@ mkfifo $ectrl_p
 basspad_p=/tmp/basspad
 mkfifo $basspad_p
 
+lead_p=/tmp/lead
+mkfifo $lead_p
 
-wave.pl -wave sin -freq 420 -amp 0.75 -ampmod $env_p  > $basspad_p &
+
+
+
+echo "bass pad"
+lpf.pl -in \
+  <(mix.pl \
+ \
+ \
+    -in1 <(mix.pl \
+              -in1 <(wave.pl -wave sin  -freqmod <(wave.pl -wave sin  -freq 0.1) -freq 440 -amp 0.35) \
+              -in2 <(wave.pl -wave sin  -ampmod <(wave.pl -wave sin  -freq 0.19) -freq 420 -amp 0.35))  \
+ \
+ \
+ \
+    -in2 <(mix.pl \
+              -in1 <(wave.pl -wave sin  \
+                             -freqmod <(wave.pl -wave sin  \
+                                                -freq 0.2 \
+                                                -freqmod <(wave.pl -wave tri \
+                                                                   -freq 0.05)\
+                                       ) \
+                             -freq 220 \
+                             -amp 0.35) \
+                                        \
+              -in2 <(wave.pl -wave sin  \
+                             -ampmod <(wave.pl -wave sin \
+                                               -freq 0.23) \
+                             -freq 210 \
+                             -amp 0.35)\
+         )  \
+  ) \
+ \
+ \
+ \
+  -cutoff 400.0 -resonance 1.4 -cutoffmod <(wave.pl -wave tri -freq 0.15) > $basspad_p &
 basspad=$!
 
-synth.pl -in /tmp/basspad | play.sh &
-syn=$!
+echo "lead pad"
+lpf.pl -in \
+  <(mix.pl \
+ \
+ \
+    -in1 <(mix.pl \
+              -in1 <(wave.pl -wave sin  -freqmod <(wave.pl -wave sin  -freq 0.1) -freq 640 -amp 0.35) \
+              -in2 <(wave.pl -wave sin  -ampmod <(wave.pl -wave sin  -freq 0.19) -freq 620 -amp 0.35))  \
+ \
+ \
+ \
+    -in2 <(mix.pl \
+              -in1 <(wave.pl -wave sin  \
+                             -freqmod <(wave.pl -wave sin  \
+                                                -freq 0.2 \
+                                                -freqmod <(wave.pl -wave tri \
+                                                                   -freq 0.05)\
+                                       ) \
+                             -freq 420 \
+                             -amp 0.35) \
+                                        \
+              -in2 <(wave.pl -wave sin  \
+                             -ampmod <(wave.pl -wave sin \
+                                               -freq 0.23) \
+                             -freq 410 \
+                             -amp 0.35)\
+         )  \
+  ) \
+ \
+ \
+ \
+  -cutoff 700.0 -resonance 1.4 -cutoffmod <(wave.pl -wave tri -freq 0.15) > $lead_p  &
+lead=$!
 
-echo "a1d.2s.8r.1"
-env.pl -ctrl $ectrl_p -amp 1.0 -sus 0.5 -attack 1.0 -decay 0.2 -sustain 0.8 -release 0.1 > $env_p &
-en=$!
-echo "setup env a1d.2s.8r.1"
+synth.pl -amp 1.0 -in $basspad_p | play.sh &
+syn1=$!
+
+synth.pl -amp 1.0 -ampmod $env_p -in $lead_p | play.sh &
+syn2=$!
+
 
 trap "echo \"Shutting down. basspad $basspad\"; \
-      kill $basspad $en $syn; \
+      kill $basspad $syn1 $syn2 $lead; \
       echo \"Removing pipes\"; \
-      rm /tmp/envgen; rm /tmp/basspad; rm /tmp/ectrl; reset; exit"\
+      rm /tmp/envgen; rm /tmp/basspad; rm /tmp/ectrl; rm /tmp/lead; reset; exit"\
       SIGINT SIGHUP SIGTERM
 
-echo "starting keytrig"
-keytrig.pl > $ectrl_p
-echo "finished keytrig"
+sleep 5;
 
-kill $en
-wait $en
+echo "env 1"
+env.pl -oneshot -amp 1.0 -sus 0.7 -attack 0.1 -decay 2.0 -sustain 1.0 -release 0.1 > $env_p 
+echo "waiting for env 1"
 
-kill $syn
-wait $syn
+sleep 5;
+
+echo "env 2"
+env.pl -oneshot -amp 1.0 -sus 0.35 -attack 1.0 -decay 2.0 -sustain 1.0 -release 1.0 > $env_p 
+echo "waiting for env 2"
+
+#echo "starting keytrig"
+#keytrig.pl > $ectrl_p
+#echo "finished keytrig"
+
+kill $syn1
+wait $syn1
+
+kill $syn2
+wait $syn2
 
 kill $basspad
 wait $basspad
 
+kill $lead
+wait $lead
+
 rm $ectrl_p
 rm $env_p
 rm $basspad_p
+rm $lead_p

@@ -80,18 +80,18 @@ synth.pl \
 ) > $s3 &
 ps5=$!
 
-#synth.pl -in <(mix.pl -in1 $s2 -in2 $s3) | play.sh
-synth.pl -in <(mix.pl \
-  -in1 <(mix.pl -in1 $s2 -in2 $s3 ) \
-  -in2 <(synth.pl \
-    -ampmod <(wave.pl -wave sqr -amp 1.0 -freq 0.5) \
-    -in <(wave.pl \
-      -wave sin -freq 600 \
-      -freqmod <(wave.pl -wave tri -freq 0.1) \
-      -freqmoddepth 1.0 \
-    )\
-  )\
-) | play.sh
+synth.pl -in <(mix.pl -in1 $s2 -in2 $s3) | play.sh
+#synth.pl -in <(mix.pl \
+#  -in1 <(mix.pl -in1 $s2 -in2 $s3 ) \
+#  -in2 <(synth.pl \
+#    -ampmod <(wave.pl -wave sqr -amp 1.0 -freq 0.5) \
+#    -in <(wave.pl \
+#      -wave sin -freq 600 \
+#      -freqmod <(wave.pl -wave tri -freq 0.1) \
+#      -freqmoddepth 1.0 \
+#    )\
+#  )\
+#) | play.sh
 
 kill $ps1 $ps2 $ps3 $ps4 $ps5
 wait $ps1 $ps2 $ps3 $ps4 $ps5

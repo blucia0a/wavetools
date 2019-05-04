@@ -1,8 +1,9 @@
-ShYnth - A shell synth 
+SySh- A synth shell
 ======================
-#### Brandon Lucia 2016
+#### Brandon Lucia 2016-2019
 
-A 16-bit, command-line, Unix-style, modular synthesizer.
+A low-budget, hard-to-use, 16-bit, command-line, Unix-style, modular
+synthesizer for live coding or demo programming.
 
 Generate Audio!
 

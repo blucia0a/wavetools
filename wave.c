@@ -1,7 +1,12 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "module.h"
 #include "wave.h"
 
-void wave_next(void*){
+sample wave_next(void *w){
+
+  return sbuf_get(((wave *)w)->s);
 
 }
 
@@ -11,7 +16,13 @@ void wave_init(wave **w){
 
 }
 
-void mod_mkwave(mod *m, wave *w){
+void wave_mkwtab(wave *w, sbuf *s){
+
+  w->s = s; 
+
+}
+
+void mod_mkwave(module *m, wave *w){
 
   m->mod = (void *)w;
   w->mod = m;

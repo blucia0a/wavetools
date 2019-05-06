@@ -8,13 +8,19 @@
 typedef struct wave_s{
 
   module *mod; /*pointer to container module*/
-  sbuf *wavetable; /*stores the samples we report*/
-  size_t rate; /*for sine: freq*/
+  sbuf *s; /*stores the samples we report*/
+
+  /*wavetable properties*/
+  
+  size_t F;
+  size_t A;
 
 } wave;
 
-void wave_next(void *);  
-void wave_init(wave *w);/*create a wave structure*/
-void mod_mkwave(mod *m);/*set m->mod = new wave; set mod->next = wave_next*/
+sample wave_next(void *);  
+void wave_init(wave **w);/*create a wave structure*/
+void wave_setwavetable(wave **w, sbuf *s);
+void wave_mkwtab(wave *w, sbuf *s);
+void mod_mkwave(module *m, wave *w);/*set m->mod = new wave; set mod->next = wave_next*/
 
 #endif

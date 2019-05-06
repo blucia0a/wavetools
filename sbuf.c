@@ -33,3 +33,11 @@ sample sbuf_get(sbuf *s){
   return r; 
 
 }
+
+sample sbuf_getn(sbuf *s, size_t n){
+
+  sample r = s->buf[s->cur];
+  s->cur = (s->cur + n) % s->sz;
+  return r; 
+
+}

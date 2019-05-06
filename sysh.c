@@ -28,7 +28,10 @@ int main( int argc, char * argv[]){
   /*Add wavetable to wave module*/
   sbuf_init(&sine,WTAB_SIN_LEN,wtab_sin);
   wave_mkwtab(w,sine);
+ 
+  wave_freq(w,440);
 
+  fprintf(stderr,"step is %d\n",w->STEP);
 
   while(1){
 

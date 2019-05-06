@@ -4,10 +4,17 @@
 #include "module.h"
 #include "wave.h"
 
-sample wave_next(void *w){
+sample wave_next(void *v){
+  
+  wave *w = (wave*)v;
+  return sbuf_getn(w->s,w->STEP);
 
-  return sbuf_get(((wave *)w)->s);
+}
 
+void wave_freq(wave *w, size_t f){
+  w->F = f;
+  /*        44100    / 440  * 44100   */
+  w->STEP = w->s->sz / w->F * SRATE;
 }
 
 void wave_init(wave **w){

@@ -16,5 +16,6 @@ void sbuf_init(sbuf **s, size_t sz, sample *data);
 void sbuf_createbuf(sbuf *s,size_t sz);
 void sbuf_put(sbuf *s);
 sample sbuf_get(sbuf *s);
+sample sbuf_getn(sbuf *s, size_t n);
 
 #endif

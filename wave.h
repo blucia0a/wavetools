@@ -14,11 +14,14 @@ typedef struct wave_s{
   
   size_t F;
   size_t A;
+  size_t STEP; //= w->T / w->F * SRATE;
+  size_t WAIT; //= 1.0 / STEP (> 1 if STEP < 1
 
 } wave;
 
 sample wave_next(void *);  
 void wave_init(wave **w);/*create a wave structure*/
+void wave_freq(wave *w, size_t f);
 void wave_setwavetable(wave **w, sbuf *s);
 void wave_mkwtab(wave *w, sbuf *s);
 void mod_mkwave(module *m, wave *w);/*set m->mod = new wave; set mod->next = wave_next*/

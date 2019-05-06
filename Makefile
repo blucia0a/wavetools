@@ -14,3 +14,4 @@ sysh: module.o wave.o sbuf.o sysh.o
 
 clean:
 	-rm *.o 
+	-rm sysh.exe

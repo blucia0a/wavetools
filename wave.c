@@ -14,7 +14,7 @@ sample wave_next(void *v){
 void wave_freq(wave *w, size_t f){
   w->F = f;
   /*        44100    / 440  * 44100   */
-  w->STEP = w->s->sz / w->F * SRATE;
+  w->STEP = w->s->sz * w->F / SRATE;
 }
 
 void wave_init(wave **w){

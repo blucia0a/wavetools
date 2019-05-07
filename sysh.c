@@ -5,6 +5,7 @@
 #include "wave.h"
 #include "sbuf.h"
 #include "sine.h"
+#include "wavloader.h"
 
 
 module *m;
@@ -12,6 +13,9 @@ wave *w;
 sbuf *sine;
 
 int main( int argc, char * argv[]){
+
+  wavfile wav;
+  wavloader_load(&wav, "sineout.wav");
 
   /*Make standard out unbuffered for raw output*/
   setbuf(stdout,NULL);

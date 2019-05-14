@@ -5,18 +5,23 @@
 #include "module.h"
 #include "wave.h"
 #include "mix.h"
-#include "sbuf.h"
+#include "mixn.h"
 #include "sine.h"
 #include "wavloader.h"
 
 
 module *mw1;
-module *mw2;
-module *mx1;
-
 wave *w1;
+module *mw2;
 wave *w2;
-mix *x1;
+module *mw3;
+wave *w3;
+module *mw4;
+wave *w4;
+
+module *mx1;
+mixn *x1;
+
 
 
 int main( int argc, char * argv[]){
@@ -29,24 +34,39 @@ int main( int argc, char * argv[]){
 
   /*Create module*/
   mod_init(&mw1);
-  /*Create module*/
-  mod_init(&mw2);
-  /*Create module*/
-  mod_init(&mx1);
-
   /*Create wave*/
   wave_init(&w1);
-  /*Create wave*/
-  wave_init(&w2);
-  /*create mix*/
-  mix_init(&x1);
-
   /*Make module wave*/
   mod_mkwave(mw1,w1);
+  
+  /*Create module*/
+  mod_init(&mw2);
+  /*Create wave*/
+  wave_init(&w2);
   /*Make module wave*/
   mod_mkwave(mw2,w2);
+  
+  /*Create module*/
+  mod_init(&mw3);
+  /*Create wave*/
+  wave_init(&w3);
+  /*Make module wave*/
+  mod_mkwave(mw3,w3);
+  
+  /*Create module*/
+  mod_init(&mw4);
+  /*Create wave*/
+  wave_init(&w4);
+  /*Make module wave*/
+  mod_mkwave(mw4,w4);
+
+  /*Create module*/
+  mod_init(&mx1);
+  /*create mixn*/
+  mixn_init(&x1);
   /*make module mix*/
-  mod_mkmix(mx1,x1);
+  mod_mkmixn(mx1,x1);
+
 
   /*Add wavetable to wave module*/
   wavetable sine;
@@ -55,11 +75,18 @@ int main( int argc, char * argv[]){
 
   wave_mkwtab(w1,&sine);
   wave_mkwtab(w2,&sine);
+  wave_mkwtab(w3,&sine);
+  wave_mkwtab(w4,&sine);
  
-  wave_freq(w1,440);
-  wave_freq(w2,640);
+  wave_freq(w1,261);
+  wave_freq(w2,330);
+  wave_freq(w3,392);
+  wave_freq(w4,494);
 
-  mix_setins(x1,mw1,mw2);
+  mixn_addin(x1,mw1);
+  mixn_addin(x1,mw2);
+  mixn_addin(x1,mw3);
+  mixn_addin(x1,mw4);
 
   //fprintf(stderr,"step is %d\n",w->STEP);
 

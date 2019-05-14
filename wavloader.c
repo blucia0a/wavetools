@@ -44,5 +44,12 @@ int wavloader_load(wavfile *wav, char *wavfile){
   wav->data = (char *)malloc(wav->datachunksz);
   fread(wav->data,wav->datachunksz,sizeof(char),WAV);
   fprintf(stderr,"loaded %u bytes of audio data\n",wav->datachunksz);
+/*
+  signed short *s = (signed short *)wav->data;
+  for(int i = 0; i < wav->datachunksz / (wav->bitspersample / 8); i++){
+    fprintf(stderr,"%hd\n",*s);
+    s++;
+  } 
+*/
 
 }

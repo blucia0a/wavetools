@@ -1,3 +1,5 @@
+#ifndef _wavloader_h_
+#define _wavloader_h_
 /*data structure for a wave file containing PCM audio data*/
 typedef struct wavfile{
   unsigned chunkid;
@@ -20,3 +22,5 @@ typedef struct wavfile{
 
 
 int wavloader_load(wavfile *wav, char *wavfile);
+
+#endif

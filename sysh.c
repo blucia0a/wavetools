@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "module.h"
 #include "wave.h"
@@ -30,8 +31,10 @@ int main( int argc, char * argv[]){
   mod_mkwave(m,w);
 
   /*Add wavetable to wave module*/
-  sbuf_init(&sine,WTAB_SIN_LEN,wtab_sin);
-  wave_mkwtab(w,sine);
+  wavetable sine;
+  memset(&sine,0,sizeof(wavetable));
+  wavtab_from_wavfile(&sine, &wav);
+  wave_mkwtab(w,&sine);
  
   wave_freq(w,440);
 

@@ -33,12 +33,12 @@ if($numsamps == 0){
   
     my $samp1raw;
     read($IN1, $samp1raw, $SampSize); #TODO
-    my $samp1 = unpack "S", $samp1raw;
+    my $samp1 = unpack "s", $samp1raw;
 
     $subsamp_cur++;
     if($subsamp_cur >= $subsamp){
   
-      print "".$samp1."\n"; 
+      print "".($samp1)."\n"; 
       $subsamp_cur = 0;
 
     }
@@ -51,13 +51,13 @@ if($numsamps == 0){
   
     my $samp1raw;
     read($IN1, $samp1raw, $SampSize); #TODO
-    my $samp1 = unpack "S", $samp1raw;
+    my $samp1 = unpack "s", $samp1raw;
   
     $numsamps--;
     $subsamp_cur++;
     if($subsamp_cur >= $subsamp){
   
-      print "".$samp1."\n"; 
+      print "".($samp1)."\n"; 
       $subsamp_cur = 0;
 
     }

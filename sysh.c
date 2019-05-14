@@ -22,7 +22,7 @@ mix *x1;
 int main( int argc, char * argv[]){
 
   wavfile wav;
-  wavloader_load(&wav, "sineout.wav");
+  wavloader_load(&wav, "sine.wav");
 
   /*Make standard out unbuffered for raw output*/
   setbuf(stdout,NULL);

@@ -27,12 +27,16 @@ void wave_freq(wave *w, size_t f){
 void wave_init(wave **w){
   
   *w = (wave *)malloc(sizeof(wave)); 
+  (*w)->cur = 0;
+  (*w)->F = 1;
 
+  /*cannot set STEP until wavetable is defined*/
 }
 
 void wave_mkwtab(wave *w, wavetable *wt){
 
   w->wt = wt; 
+  w->STEP = w->wt->len * w->F / w->wt->samplerate;
 
 }
 

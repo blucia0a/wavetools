@@ -27,7 +27,7 @@ mixn *x1;
 int main( int argc, char * argv[]){
 
   wavfile wav;
-  wavloader_load(&wav, "sine.wav");
+  wavloader_load(&wav, "wavlib/meow2.wav");
 
   /*Make standard out unbuffered for raw output*/
   setbuf(stdout,NULL);
@@ -78,10 +78,10 @@ int main( int argc, char * argv[]){
   wave_mkwtab(w3,&sine);
   wave_mkwtab(w4,&sine);
  
-  wave_freq(w1,261);
-  wave_freq(w2,330);
-  wave_freq(w3,392);
-  wave_freq(w4,494);
+  wave_freq(w1,15);
+  wave_freq(w2,4);
+  wave_freq(w3,10);
+  wave_freq(w4,2);
 
   mixn_addin(x1,mw1);
   mixn_addin(x1,mw2);

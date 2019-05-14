@@ -10,9 +10,7 @@ sample mix_next(void *v){
   mix *m = (mix *)v;
 
   sample r1 = m->in1->next(m->in1->mod);
-  fprintf(stderr,"%hd\n",r1);
   sample r2 = m->in2->next(m->in2->mod);
-  fprintf(stderr,"%hd\n",r2);
 
   return (0.5 * r1) + (0.5 * r2);
 

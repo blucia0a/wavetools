@@ -32,6 +32,9 @@ int main( int argc, char * argv[]){
 
   wavfile wav;
   wavloader_load(&wav, "wavlib/sine.wav");
+  
+  wavfile meowav;
+  wavloader_load(&meowav, "wavlib/meow2.wav");
 
   /*Make standard out unbuffered for raw output*/
   setbuf(stdout,NULL);
@@ -83,24 +86,29 @@ int main( int argc, char * argv[]){
   wavetable sine;
   memset(&sine,0,sizeof(wavetable));
   wavtab_from_wavfile(&sine, &wav);
+  
+  /*Add wavetable to wave module*/
+  wavetable meowtab;
+  memset(&meowtab,0,sizeof(wavetable));
+  wavtab_from_wavfile(&meowtab, &meowav);
 
   wave_mkwtab(w1,&sine);
   wave_mkwtab(w2,&sine);
-  wave_mkwtab(w3,&sine);
-  wave_mkwtab(w4,&sine);
+  wave_mkwtab(w3,&meowtab);
+  wave_mkwtab(w4,&meowtab);
  
   wave_freq(w1,230);
   wave_freq(w2,1000);
-  wave_freq(w3,440);
-  wave_freq(w4,550);
+  wave_freq(w3,2);
+  wave_freq(w4,40);
 
   mixn_addin(x1,mw1);
   mixn_addin(x1,mw2);
   mixn_addin(x1,mw3);
   mixn_addin(x1,mw4);
 
-  lpfsimp_setres(lpf1,1.4);
-  lpfsimp_setcutoff(lpf1,440.);
+  lpfsimp_setres(lpf1,1.8);
+  lpfsimp_setcutoff(lpf1,220.);
   lpfsimp_setin(lpf1,mx1);
 
   //fprintf(stderr,"step is %d\n",w->STEP);

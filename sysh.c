@@ -89,16 +89,18 @@ int main( int argc, char * argv[]){
   wave_mkwtab(w3,&sine);
   wave_mkwtab(w4,&sine);
  
-  wave_freq(w1,110);
-  wave_freq(w2,220);
-  wave_freq(w3,330);
-  wave_freq(w4,440);
+  wave_freq(w1,230);
+  wave_freq(w2,1000);
+  wave_freq(w3,440);
+  wave_freq(w4,550);
 
   mixn_addin(x1,mw1);
   mixn_addin(x1,mw2);
   mixn_addin(x1,mw3);
   mixn_addin(x1,mw4);
 
+  lpfsimp_setres(lpf1,1.4);
+  lpfsimp_setcutoff(lpf1,440.);
   lpfsimp_setin(lpf1,mx1);
 
   //fprintf(stderr,"step is %d\n",w->STEP);
@@ -107,7 +109,8 @@ int main( int argc, char * argv[]){
 
     sample ns;
 
-    ns = mx1->next((void*)mx1->mod);
+    ns = mlpf1->next((void*)mlpf1->mod);
+    //ns = mx1->next((void*)mx1->mod);
 
     fwrite(&ns,sizeof(sample),1,stdout);
 

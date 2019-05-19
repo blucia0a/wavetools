@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "module.h"
+#include "out.h"
 #include "lpfsimp.h"
 #include "mixn.h"
 #include "mix.h"
@@ -26,7 +27,8 @@ lpfsimp *lpf1;
 module *mx1;
 mixn *x1;
 
-
+module *mo;
+out *o;
 
 int main( int argc, char * argv[]){
 
@@ -38,6 +40,11 @@ int main( int argc, char * argv[]){
 
   /*Make standard out unbuffered for raw output*/
   setbuf(stdout,NULL);
+
+  /*Create output module*/
+  mod_init(&mo);
+  out_init(&o);
+  mod_mkout(mo,o); 
 
   /*Create module*/
   mod_init(&mw1);
@@ -111,17 +118,31 @@ int main( int argc, char * argv[]){
   lpfsimp_setcutoff(lpf1,220.);
   lpfsimp_setin(lpf1,mx1);
 
-  //fprintf(stderr,"step is %d\n",w->STEP);
+  out_setin(o,mlpf1);
+
+  /*
+ *
+ * w1 | w2 | w3 | w4 
+ * \               /
+ *  ---------------
+ *         |
+ *         x1
+ *         |
+ *         lpf1
+ *         |
+ *         o
+ */
 
   while(1){
 
-    sample ns;
+    mo->next((void*)mo->mod);
+/*    sample ns;
 
     ns = mlpf1->next((void*)mlpf1->mod);
     //ns = mx1->next((void*)mx1->mod);
 
     fwrite(&ns,sizeof(sample),1,stdout);
-
+*/
   }
 
 }

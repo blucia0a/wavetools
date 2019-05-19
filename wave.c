@@ -8,20 +8,36 @@
 sample wave_next(void *v){
   
   wave *w = (wave*)v;
+  sample r = 0;
+  if( w->STEP >= 1. ){
 
-  sample r = w->wt->data[w->cur];
-  w->cur = (w->cur + w->STEP) % w->wt->len;
+    w->WAIT = 0;
+    w->cur = (w->cur + (size_t)w->STEP) % w->wt->len;
+  }else{
 
+    if( w->WAIT <= 0 ){
+      w->cur = (w->cur + 1) % w->wt->len;
+      w->WAIT = (short) (1. / w->STEP);
+    }else{
+      w->WAIT--;
+    }  
+
+  }
+
+  r = w->wt->data[w->cur];
   assert(w->cur >= 0);
   assert(w->cur < w->wt->len); 
   return r;
 
 }
 
-void wave_freq(wave *w, size_t f){
+void wave_freq(wave *w, float f){
+  fprintf(stderr,"%f\n",f);
   w->F = f;
   /*        44100    / 440  * 44100   */
-  w->STEP = w->wt->len * w->F / w->wt->samplerate;
+  w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
+  fprintf(stderr,"set step = %f len = %f, F=%f, rate=%f\n",w->STEP,(float)(w->wt->len), (float)(w->F), (float)(w->wt->samplerate));
+  w->WAIT = (short) (1. / w->STEP);
 }
 
 void wave_init(wave **w){
@@ -36,7 +52,7 @@ void wave_init(wave **w){
 void wave_mkwtab(wave *w, wavetable *wt){
 
   w->wt = wt; 
-  w->STEP = w->wt->len * w->F / w->wt->samplerate;
+  w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
 
 }
 
@@ -48,7 +64,7 @@ void mod_mkwave(module *m, wave *w){
 
 }
 
-module *wave_new( wavetable *wtab, unsigned freq ){
+module *wave_new( wavetable *wtab, float freq ){
 
   module *m;
   wave *w;

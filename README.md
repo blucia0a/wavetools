@@ -41,7 +41,6 @@ by downstream code.  Constructors are specific to each module type and have name
 ## Feature Roadmap
 * control signal interfaces
 * Trigger vs. continuous
-* LFO module / Waves at <1Hz
 * REPL support 
 * PulseAudio output backend
 * MIDI input handling

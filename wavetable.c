@@ -38,3 +38,12 @@ void wavtab_from_wavfile(wavetable *wt, wavfile *wf){
   
 
 }
+
+wavetable * wavetable_new(char *fname){
+  
+  wavfile *wav = (wavfile *)calloc(1,sizeof(wavfile));
+  wavetable *tab = (wavetable *)calloc(1,sizeof(wavetable));
+  wavloader_load(wav, fname);
+  wavtab_from_wavfile(tab, wav);
+  return tab;
+}

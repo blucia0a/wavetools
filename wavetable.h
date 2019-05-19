@@ -16,6 +16,7 @@ typedef struct wavetable{
 
 sample wavetable_getn(wavetable *wt,unsigned n);
 
-/*Constructor*/
 void wavtab_from_wavfile(wavetable *wt,wavfile *wf);
+/*Constructor*/
+wavetable * wavetable_new(char *fname);
 #endif

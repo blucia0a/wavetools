@@ -15,7 +15,7 @@ typedef struct wave_s{
   float F;
   size_t A;
   float STEP; //= w->T / w->F * SRATE;
-  short WAIT; //= 1.0 / STEP (> 1 if STEP < 1
+  float WAIT; //= 1.0 / STEP (> 1 if STEP < 1
   size_t cur;
 
 } wave;

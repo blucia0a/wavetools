@@ -26,5 +26,6 @@ void wave_freq(wave *w, size_t f);
 void wave_setwavetable(wave **w, wavetable *wt);
 void wave_mkwtab(wave *w, wavetable *wt);
 void mod_mkwave(module *m, wave *w);/*set m->mod = new wave; set mod->next = wave_next*/
+module *wave_new( wavetable *wtab, unsigned freq );
 
 #endif

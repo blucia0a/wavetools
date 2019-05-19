@@ -42,6 +42,7 @@ void lpfsimp_setres(lpfsimp *fs, float res);
 void lpfsimp_setcutoff(lpfsimp *fs, float cutoff);
 void mod_mklpfsimp(module *m, lpfsimp *fs);/*setup module container*/
 
+module *lpfsimp_new(float cutoff, float resonance);
 
 
 #endif

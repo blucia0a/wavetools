@@ -51,3 +51,16 @@ void mod_mkmixn(module *m, mixn *mx){
   m->next = mixn_next;
 
 }
+
+module *mixn_new(){
+ 
+  module *mx1;
+  mixn *x1; 
+  /*Create module*/
+  mod_init(&mx1);
+  /*create mixn*/
+  mixn_init(&x1);
+  /*make module mix*/
+  mod_mkmixn(mx1,x1);
+  return mx1;
+}

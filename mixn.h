@@ -20,5 +20,5 @@ sample mix_next(void *);
 void mixn_init(mixn **mx);/*create a wave structure*/
 void mixn_addin(mixn *mx, module *in);
 void mod_mkmixn(module *m, mixn *mx);/*set m->mod = new wave; set mod->next = wave_next*/
-
+module *mixn_new();
 #endif

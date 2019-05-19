@@ -47,3 +47,25 @@ void mod_mkwave(module *m, wave *w){
   m->next = wave_next;
 
 }
+
+module *wave_new( wavetable *wtab, unsigned freq ){
+
+  module *m;
+  wave *w;
+  
+  /*Create module*/
+  mod_init(&m);
+
+  /*Create wave*/
+  wave_init(&w);
+
+  /*Make module wave*/
+  mod_mkwave(m,w);
+  
+  wave_mkwtab(w,wtab);
+ 
+  wave_freq(w,freq);
+
+  return m;
+
+}

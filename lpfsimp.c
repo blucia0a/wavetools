@@ -77,3 +77,18 @@ void mod_mklpfsimp(module *m, lpfsimp *fs){
   m->next = lpfsimp_next;
 
 }
+
+module *lpfsimp_new(float cutoff, float resonance){
+ 
+  module *mlpf1;
+  lpfsimp *lpf1; 
+
+  mod_init(&mlpf1);
+  lpfsimp_init(&lpf1);
+  mod_mklpfsimp(mlpf1,lpf1);
+
+  lpfsimp_setres(lpf1,resonance);
+  lpfsimp_setcutoff(lpf1,cutoff);
+  return mlpf1;
+
+}

@@ -56,3 +56,14 @@ void out_stdout_outf(sample *b, size_t sz){
   fwrite(b,sizeof(sample),sz,stdout);
 }
 
+module *out_new(){
+
+  /*Create output module*/
+  module *mo;
+  out *o;
+  mod_init(&mo);
+  out_init(&o);
+  mod_mkout(mo,o); 
+  return mo;
+
+}

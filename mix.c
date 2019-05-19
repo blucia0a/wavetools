@@ -35,3 +35,14 @@ void mod_mkmix(module *m, mix *mx){
   m->next = mix_next;
 
 }
+
+module *mix_new(){
+
+  module *m;
+  mix *x;
+  mod_init(&m);
+  mix_init(&x);
+  mod_mkmix(m,x);
+  return m;
+
+}

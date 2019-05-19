@@ -23,4 +23,5 @@ void out_setin(out *o, module *in);
 void out_setoutput(out *o, void (*outf)(sample *, size_t) );
 void mod_mkout(module *m, out *o);/*set m->mod = new wave; set mod->next = wave_next*/
 void out_stdout_outf(sample *, size_t);
+module * out_new();
 #endif

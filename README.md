@@ -1,68 +1,47 @@
-ShYnth - A shell synth 
+Synsh - A synth shell
 ======================
-#### Brandon Lucia 2016
+#### Brandon Lucia 2016-2019
 
-A 16-bit, command-line, Unix-style, modular synthesizer.
+A minimalist modular synthesizer and audio processing sandbox. 
 
-Generate Audio!
+## Use
+For now, synsh lacks end-user usability features and is primarily a library of
+modules that can be stitched together to make fixed, compiled synthesis
+pipelines.  The feature roadmap below outlines the plan for these usability
+features.
 
-`./wave.pl -wave tri -freq 440 -amp 0.5`
+The current system supports wavetable synthesis and has support for generating,
+mixing, low-pass filtering, and outputting 16-bit PCM audio data. 
 
-Generate Control signals!
+## Module List
 
-`./wave.pl -wave tri -freq 10 -freqmod <(./wave -wave tri -freq 1)`
+#### Wave - wavetable synthesis module
 
-The output of each module is a stream of sample values between 0 and 65536 (16-bit INTMAX).
-When a stream of samples is used as a modulation input, the module being modulated
-uses the stream of samples as a scale factor between 0.0 and 1.0.
+#### Mix - two-input signal mixer
 
-Use `sox` to make noise!  `play.sh` is a fixed command line for 16-bit, mono,
-44100Hz audio. (Different bit-width, stereo, and variable audio rate coming soon).
+#### Mixn - (experimental) n-input signal mixer
 
-`./wave.pl -wave tri -freq 440 -amp 0.5 | ./play.sh`
+#### Out - flexible buffering output module
+
+#### LPFSimp - a simple low-pass filtering module
+
+#### wavloader - not a module, but a RIFF WAV file loader to get wavetables for wave modules
+
+## Developer Guide
+The goal of this project is to build a flexible synthesizer from scratch with no library dependences.
+
+The project has a generic module interface that supports reference to a derived module type and a generic `next()` function that returns the module's next sample.
+
+To instantiate a module, a program needs init a generic module pointer, a specific module pointer using their respective \_init functions.  After initialization, the program should use the specific module's mod\_mk function to link the specific module to its generic module container.
+
+Specific modules may have inputs that can be set with their setin or setins
+functions.
 
 
-The main mechanism for patching modules is process redirection `<( ... )`, like
 
-```./mix.pl -in1 <(./wave.pl -wave sin -freq 440 -amp 0.5) 
-            -in2 <(./wave.pl -wave sin -freq 450 -amp 0.5)```
-
-The main mechanism for mult-out support (i.e., for a sync'd clock) is a named pipe.
-
-```bash
-
-sync1=/tmp/sync1
-sync2=/tmp/sync2
-
-mkfifo $sync1
-mkfifo $sync2
-
-#Set up the mod mult -- this clock runs to sync1 and sync2
-./wave.pl -wave tri -freq 90 | tee /tmp/sync1 > /tmp/sync2 &
-sync=$!
-
-#Prepare to cleanup the sync wave and pipes when Ctrl+c ends the mix below
-trap "kill $sync; rm /tmp/sync1 /tmp/sync2"
-
-#Route the mult outs to these two waves via sync1 and sync2
-./mix.pl -in1 <(./wave.pl -wave sin -freq 655 -amp 0.6 -freqmod /tmp/sync1) 
-         -in2 <(./wave.pl -wave sin -freq 660 -amp 0.6 -freqmod /tmp/sync2) | play.sh
-
-```
-
-Module List and Parameters
---------------------------
-* `./mix.pl -in1 <(stream) -in2 <(stream)`
-* `./wave.pl -wave [sin | tri] -freq <Hz> -amp (0.0 - 1.0) -freqmod <(stream) -ampmod <(stream)`
-* `./lpf.pl -in <(stream) -cutoff <Hz> -resonance (0.4ish - 2.0ish) -cutoffmod <(stream)`
-* `./amp.pl -in <(stream) -amp (0.0 - 1.0)`
-
-TODO
-----
-* Add modulation to resonance (later)
-* --Add envelope generator-- 
-* Make EG restartable
-* Add modulation depth parameter and center modulation on specified value (later)
-* Better support for modmult?
-* Add trigger module and support in envgen to trigger
-* Figure out why envgen does not work for freqmod
+## Feature Roadmap
+* control signal interfaces
+* LFO module / Waves at <1Hz
+* REPL support 
+* PulseAudio output backend
+* MIDI input handling

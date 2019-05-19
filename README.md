@@ -32,15 +32,15 @@ The goal of this project is to build a flexible synthesizer from scratch with no
 
 The project has a generic module interface that supports reference to a derived module type and a generic `next()` function that returns the module's next sample.
 
-To instantiate a module, a program needs init a generic module pointer, a specific module pointer using their respective \_init functions.  After initialization, the program should use the specific module's mod\_mk function to link the specific module to its generic module container.
-
-Specific modules may have inputs that can be set with their setin or setins
-functions.
+Each module has a constructor that takes a module container pointer and a
+specific module type pointer and returns a fully-formed module that can be used
+by downstream code.  Constructors are specific to each module type and have names that end in \_new.
 
 
 
 ## Feature Roadmap
 * control signal interfaces
+* Trigger vs. continuous
 * LFO module / Waves at <1Hz
 * REPL support 
 * PulseAudio output backend

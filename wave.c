@@ -16,6 +16,7 @@ sample wave_next(void *v){
 
   }else{
 
+    /*w->STEP < 1.*/
     if( w->WAIT <= 0 ){
 
       w->cur = (w->cur + 1) % w->wt->len;

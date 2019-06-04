@@ -8,6 +8,9 @@
 sample wave_next(void *v){
   
   wave *w = (wave*)v;
+
+  wave_modulate(w);
+
   sample r = 0;
   if( w->STEP >= 1. ){
 
@@ -35,11 +38,16 @@ sample wave_next(void *v){
 
 }
 
+
+
 void wave_freq(wave *w, float f){
+
   w->F = f;
+  w->base_F = f;
   /*        44100    / 440  * 44100   */
   w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
   w->WAIT =  (1. / w->STEP);
+
 }
 
 void wave_init(wave **w){
@@ -51,10 +59,31 @@ void wave_init(wave **w){
   /*cannot set STEP until wavetable is defined*/
 }
 
+void wave_modulate(wave *w){
+
+  if(w->freqmod){
+
+    sample fms = w->freqmod->next(w->freqmod->mod);
+    float fmod = SAMP2SCALE(fms);
+
+    /*TODO: memoize the shifted base value*/
+    w->F = w->base_F - 0.5 * w->base_F + fmod * w->base_F;
+    w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
+
+  }
+
+}
+
 void wave_mkwtab(wave *w, wavetable *wt){
 
   w->wt = wt; 
   w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
+
+}
+
+void wave_setfreqmod(wave *w, module *fmod){
+
+  w->freqmod = fmod;
 
 }
 

@@ -32,13 +32,15 @@ int main( int argc, char * argv[]){
   setbuf(stdout,NULL);
 
   wavetable *sine = wavetable_new("wavlib/sine.wav");
-  //wavetable *noise = wavetable_new("/home/blucia/cvsandbox/AKWF-FREE/AKWF/AKWF_cello/AKWF_cello_0018.wav");
+  wavetable *cello = wavetable_new("/home/blucia/cvsandbox/AKWF-FREE/AKWF/AKWF_cello/AKWF_cello_0018.wav");
   //wavetable *meowtab = wavetable_new("wavlib/meow2.wav");
   module *mw1 = wave_new( sine, 220);
-  module *mw2 = wave_new( sine, 440);
-  module *mw3 = wave_new( sine, 880);
+  module *mw2 = wave_new( cello, 1);
+  module *mw3 = wave_new( cello, 880);
   module *mw4 = noise_new( );
   module *mlfo = wave_new( sine, 0.1);
+  module *mlfo2 = wave_new( sine, 0.1);
+  wave_setfreqmod(mw1->mod, mlfo2);
   //module *mw4 = wave_new( sine, 1340);
 
 

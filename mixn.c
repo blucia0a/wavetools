@@ -34,7 +34,7 @@ void mixn_init(mixn **w){
 void mixn_addin(mixn *mx, module *in){
 
   /*Make space for more inputs if necessary*/
-  if( mx->nextin == mx->numins ){
+  if( mx->nextin >= mx->numins ){
     mx->ins = realloc(mx->ins, mx->numins * 2);
     mx->numins *= 2;
   }

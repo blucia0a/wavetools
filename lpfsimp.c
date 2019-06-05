@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -7,9 +8,21 @@
 sample lpfsimp_next(void *vlpf){
 
   lpfsimp *lpf = (lpfsimp *)vlpf;
+  
+  if( lpf->cutoffmod_in ){
+
+    sample modin = lpf->cutoffmod_in->next(lpf->cutoffmod_in->mod);
+
+    float cmod = SAMP2SCALE(modin);
+
+    lpf->cutoff = lpf->base_cutoff - 0.5 * lpf->base_cutoff + cmod * lpf->base_cutoff;
+    lpfsimp_updateparams(lpf);
+    
+  }
+
+
   sample in = 
     lpf->in->next(lpf->in->mod);
-
 
   float out = 
   lpf->a1 * (float)in + 
@@ -47,6 +60,7 @@ void lpfsimp_init(lpfsimp **fs){
 
   (*fs)->resonance = 1.;
   (*fs)->cutoff = 20000.; 
+  (*fs)->base_cutoff = 20000.; 
 
   lpfsimp_updateparams(*fs);
 
@@ -60,6 +74,10 @@ void lpfsimp_setin(lpfsimp *fs, module *in){
   fs->in = in;
 }
 
+void lpfsimp_setcutoffmod(lpfsimp *fs, module *mod){
+  fs->cutoffmod_in = mod;
+}
+
 void lpfsimp_setres(lpfsimp *fs, float res){
   fs->resonance = res;
   lpfsimp_updateparams(fs); 
@@ -67,6 +85,7 @@ void lpfsimp_setres(lpfsimp *fs, float res){
 
 void lpfsimp_setcutoff(lpfsimp *fs, float cutoff){
   fs->cutoff = cutoff;
+  fs->base_cutoff = cutoff;
   lpfsimp_updateparams(fs); 
 }
 

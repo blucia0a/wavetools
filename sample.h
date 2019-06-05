@@ -5,4 +5,6 @@
  * different sample types to avoid conversion logic*/
 typedef short sample;
 
+#define SAMP2SCALE(s)  ( ((float)(s+32767)) / 65536. )
+
 #endif

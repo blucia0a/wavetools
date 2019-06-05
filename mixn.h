@@ -4,7 +4,7 @@
 #include "sample.h"
 #include "module.h"
 
-#define MIXN_DEFAULT_NUM_INS 4
+#define MIXN_DEFAULT_NUM_INS 16
 typedef struct mixn_s{
 
   module *mod; /*pointer to container module*/

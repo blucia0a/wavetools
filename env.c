@@ -3,116 +3,67 @@
 #include <assert.h>
 
 #include "module.h"
-#include "wave.h"
+#include "env.h"
 
-sample wave_next(void *v){
+sample env_next(void *v){
   
-  wave *w = (wave*)v;
+  env *e = (env*)v;
 
-  wave_modulate(w);
+  sample r = 1.0;
 
-  sample r = 0;
-  if( w->STEP >= 1. ){
-
-    w->WAIT = 0;
-    w->cur = (w->cur + (size_t)w->STEP) % w->wt->len;
-
-  }else{
-
-    /*w->STEP < 1.*/
-    if( w->WAIT <= 0 ){
-
-      w->cur = (w->cur + 1) % w->wt->len;
-      w->WAIT =  (1. / w->STEP);
-
-    }else{
-      w->WAIT--;
-    }  
-
-  }
-
-  r = w->wt->data[w->cur];
-  assert(w->cur >= 0);
-  assert(w->cur < w->wt->len); 
   return r;
 
 }
 
-
-
-void wave_freq(wave *w, float f){
-
-  w->F = f;
-  w->base_F = f;
-  /*        44100    / 440  * 44100   */
-  w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
-  w->WAIT =  (1. / w->STEP);
-
-}
-
-void wave_init(wave **w){
+void env_init(env **e){
   
-  *w = (wave *)malloc(sizeof(wave)); 
-  (*w)->cur = 0;
-  (*w)->F = 1;
-
-  /*cannot set STEP until wavetable is defined*/
-}
-
-void wave_modulate(wave *w){
-
-  if(w->freqmod){
-
-    sample fms = w->freqmod->next(w->freqmod->mod);
-    float fmod = SAMP2SCALE(fms);
-
-    /*TODO: memoize the shifted base value*/
-    w->F = w->base_F - 0.5 * w->base_F + fmod * w->base_F;
-    w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
-
-  }
+  *e = (env *)malloc(sizeof(env)); 
 
 }
 
-void wave_mkwtab(wave *w, wavetable *wt){
+void env_envelope(env *e, float a, float d, float s, float r, size_t srate){
 
-  w->wt = wt; 
-  w->STEP = (float)(w->wt->len) * (float)(w->F) / (float)(w->wt->samplerate);
+  e->srate = srate;
 
-}
+  e->A = a; 
+  e->As = a * srate; 
 
-void wave_setfreqmod(wave *w, module *fmod){
+  e->D = d; 
+  e->Ds = d * srate; 
 
-  w->freqmod = fmod;
+  e->S = s; 
+  e->Ss = s * srate; 
 
-}
-
-void mod_mkwave(module *m, wave *w){
-
-  m->mod = (void *)w;
-  w->mod = m;
-  m->next = wave_next;
+  e->R = r; 
+  e->Rs = r * srate; 
 
 }
 
-module *wave_new( wavetable *wtab, float freq ){
+void mod_mkenv(module *m, env *e){
+
+  m->mod = (void *)e;
+  e->mod = m;
+  m->next = env_next;
+
+}
+
+module *env_new( float a, float d, float s, float r, size_t srate){
 
   module *m;
-  wave *w;
+  env *e;
   
   /*Create module*/
   mod_init(&m);
 
-  /*Create wave*/
-  wave_init(&w);
+  /*Create env*/
+  env_init(&e);
 
-  /*Make module wave*/
-  mod_mkwave(m,w);
-  
-  wave_mkwtab(w,wtab);
+  /*Make module env*/
+  mod_mkenv(m,e);
  
-  wave_freq(w,freq);
-
+  /*Create envelop parameters*/
+  env_envelope(e, a, d, s, r, srate);
+ 
   return m;
 
 }

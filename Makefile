@@ -9,7 +9,7 @@ all: sysh
 %.o: %.c
 	$(GCC) $(CFLAGS) -c $^ -o $@
 
-sysh: noise.o reslpf.o out.o lpfsimp.o mixn.o mix.o wavetable.o wavloader.o module.o wave.o sbuf.o sysh.o
+sysh: amp.o noise.o reslpf.o out.o lpfsimp.o mixn.o mix.o wavetable.o wavloader.o module.o wave.o sbuf.o sysh.o
 	$(GCC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 clean:

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "module.h"
+#include "amp.h"
 #include "out.h"
 #include "noise.h"
 #include "reslpf.h"
@@ -73,8 +74,14 @@ int main( int argc, char * argv[]){
   mixn_addin(mx3->mod,mlpf2);
 
 
+
+  module *mlfoamp = wave_new( sine, 1.);
+  module *ma = amp_new( 0.9 );
+  amp_setampmod(ma->mod, mlfoamp);
+  amp_setin(ma->mod,mx3);
+
   module *mo = out_new();
-  out_setin(mo->mod,mx3);
+  out_setin(mo->mod,ma);
 
   while(1){
 

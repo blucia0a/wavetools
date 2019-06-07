@@ -17,7 +17,7 @@ void wavtab_from_wavfile(wavetable *wt, wavfile *wf){
   /*number of bytes of audio data / size of sample*/
   wt->len = wf->datachunksz / wt->samplesz; 
 
-  fprintf(stderr,"rate: %u chan: %u sampsz: %u len %u\n",wt->samplerate,wt->channels,wt->samplesz,wt->len);
+  /*fprintf(stderr,"rate: %u chan: %u sampsz: %u len %u\n",wt->samplerate,wt->channels,wt->samplesz,wt->len);*/
 
   if(wt->data){
     /*Free the previous wavetable's data*/

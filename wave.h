@@ -9,7 +9,7 @@ typedef struct wave_s{
 
   module *mod; /*pointer to container module*/
   module *freqmod; /*pointer to container module*/
-  wavetable *wt; /*either a wavloader or an sbuf*/ 
+  wavetable *wt; /*either a wavloader*/ 
 
   /*wavetable properties*/
   

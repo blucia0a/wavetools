@@ -1,3 +1,3 @@
 #!/bin/bash
 
-play -q -t raw -e unsigned-integer -b 16 -r 44100 -c 1 -
+play -q -t raw -e signed-integer -b 16 -r 44100 -c 1 -

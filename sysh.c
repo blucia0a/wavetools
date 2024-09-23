@@ -33,7 +33,7 @@ int main( int argc, char * argv[]){
   setbuf(stdout,NULL);
 
   wavetable *sine = wavetable_new("wavlib/sine.wav");
-  wavetable *cello = wavetable_new("/home/blucia/cvsandbox/AKWF-FREE/AKWF/AKWF_cello/AKWF_cello_0018.wav");
+  wavetable *cello = wavetable_new("wavlib/meow2.wav");
   //wavetable *meowtab = wavetable_new("wavlib/meow2.wav");
   module *mw1 = wave_new( sine, 440);
   module *mw2 = wave_new( sine, 235);

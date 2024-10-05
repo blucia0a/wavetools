@@ -1,4 +1,4 @@
 .gitignore
 *.o
 *.exe
-perl
+sysh

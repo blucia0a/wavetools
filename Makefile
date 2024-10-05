@@ -1,16 +1,17 @@
 GCC=gcc
+CC ?= $(GCC)
 
-CFLAGS+= -I. -g -Wno-deprecated
+CFLAGS += -I. -g -Wno-deprecated
 
-LDFLAGS+= -std=c11 -lm
+LDFLAGS += -std=c11 -lm
 
 all: sysh
 
 %.o: %.c
-	$(GCC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 sysh: env.o amp.o noise.o reslpf.o out.o lpfsimp.o mixn.o mix.o wavetable.o wavloader.o module.o wave.o sysh.o
-	$(GCC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 clean:
 	-rm *.o 

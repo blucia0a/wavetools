@@ -32,7 +32,7 @@ complex float gettwiddle(int k, int n){
 }
 
 /*Recursive Radix-2 Decimation in Time FFT*/
-void fft(const complex float *x, complex float *X, int N, int s){
+void dit2fft(const complex float *x, complex float *X, int N, int s){
 
   if( N == 1 ){
 
@@ -55,7 +55,7 @@ void fft(const complex float *x, complex float *X, int N, int s){
 
 }
 
-void ifft(const complex float *X, complex float *x, int N){
+void dit2ifft(const complex float *X, complex float *x, int N){
   /*Using some extra space to avoid blowing away X*/
   complex float flipped[N];
   complex float flopped[N];
@@ -90,24 +90,24 @@ void fft_test(){
   struct timespec start;
   struct timespec end;
   clock_gettime(CLOCK_REALTIME,&start);
-  fft(x,fftX,NUM_BINS,1);
-  ifft(fftX,ifftx,NUM_BINS);
+  dit2fft(x,fftX,NUM_BINS,1);
+  dit2ifft(fftX,ifftx,NUM_BINS);
   clock_gettime(CLOCK_REALTIME,&end);
   printf("FFT Time: %lu\n",end.tv_nsec-start.tv_nsec);
 
   FILE *wave = fopen("wav.out","w");
-  FILE *fft = fopen("fft.out","w");
-  FILE *ifft = fopen("ifft.out","w");
+  FILE *fftfile = fopen("fft.out","w");
+  FILE *ifftfile = fopen("ifft.out","w");
   for(int i = 0; i < SIG_LEN; i++){
     fprintf(wave,"%d %f\n",i,cabs(x[i]));
   }
   
   for(int i = 0; i < NUM_BINS / 2; i++){
-    fprintf(fft,"%d %f\n",i,cabs(fftX[i]));
+    fprintf(fftfile,"%d %f\n",i,cabs(fftX[i]));
   }
   
   for(int i = 0; i < SIG_LEN; i++){
-    fprintf(ifft,"%d %f\n",i,cabs(ifftx[i]));
+    fprintf(ifftfile,"%d %f\n",i,cabs(ifftx[i]));
   }
 
 }

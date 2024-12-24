@@ -6,11 +6,16 @@
 /*sample size in bytes*/
 #define SAMPLE_TYPE short 
 #define SAMPLE_SIZE 2 
-#define NUM_SAMPLES 2048 
-#define NUM_BUFS 8
+#define NUM_SAMPLES 512 
+#define NUM_BUFS 12
 
 #define SCREEN_HEIGHT 480
 #define SCREEN_WIDTH 2048 
+#define BASE_PIXEL_WIDTH 4
+#define BASE_PIXEL_HEIGHT 8 
+
+#define rescale(oldval, oldmax, oldmin, newmax, newmin)\
+((oldval - oldmin) * (newmax - newmin)/(oldmax - oldmin) + newmin)
 
 int main(int argc, char *argv[]) {
     // Initialize SDL
@@ -44,7 +49,9 @@ int main(int argc, char *argv[]) {
     // Event loop
     SDL_Event event;
     int quit = 0;
-    unsigned int x0 = 100, y0 = 100;
+    const int pixelwidth = (SCREEN_WIDTH / NUM_SAMPLES) * BASE_PIXEL_WIDTH;
+    const int pixelheight = (SCREEN_HEIGHT / NUM_SAMPLES) * BASE_PIXEL_HEIGHT;
+    const float color_scale = 255. / NUM_BUFS;
     while (!quit) {
    
       // Read from standard input (stdin)
@@ -58,19 +65,22 @@ int main(int argc, char *argv[]) {
 
       int num = 0;
       for(int j = curbuf, num = 0; num < NUM_BUFS; j = (j + 1) % NUM_BUFS,num++){
-      SAMPLE_TYPE *sampbuf = (SAMPLE_TYPE *)buffer[j];
-      SDL_SetRenderDrawColor(renderer, (255. / (float)NUM_BUFS) * (float)num, 0, 255 - (255. / (float)NUM_BUFS) * (float)num, 255);
-      for (ssize_t i = 1; i < NUM_SAMPLES; ++i) {
+        SAMPLE_TYPE *sampbuf = (SAMPLE_TYPE *)buffer[j];
+        SDL_SetRenderDrawColor(renderer, color_scale * num, 0, 255 - (color_scale * num), 255);
+        for (ssize_t i = 1; i < NUM_SAMPLES; ++i) {
 
-         // Draw a red rectangle
-         //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-         //fprintf(stderr,"%d ",(int)sampbuf[i]);
-         int y = (int)(((float)(sampbuf[i]+SHRT_MAX) / (float)(2 * SHRT_MAX)) * (float) SCREEN_HEIGHT);
-         SDL_Rect rect = { i, y, 2, 2};
-         SDL_RenderFillRect(renderer, &rect);
-         //SDL_RenderDrawPoint(renderer, i, y);
+          // Draw a red rectangle
+          //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+          //fprintf(stderr,"%d ",(int)sampbuf[i]);
+          //int y = (sampbuf[i] - SHRT_MIN) * (SCREEN_HEIGHT - 0) / (SHRT_MAX - SHRT_MIN) + 0; 
+          int x = rescale(i,NUM_SAMPLES,0,SCREEN_WIDTH,0);
+          int y = rescale(sampbuf[i],SHRT_MAX,SHRT_MIN,SCREEN_HEIGHT,0);
+          //int y = sampbuf[i] + SHRT_MAX / 2 * SHRT_MAX * SCREEN_HEIGHT;
+          SDL_Rect rect = { x, y, 8, 8};
+          SDL_RenderFillRect(renderer, &rect);
+          //SDL_RenderDrawPoint(renderer, i, y);
       
-      }
+        }
       }
       curbuf = (curbuf + 1) % NUM_BUFS;
       // Update the screen

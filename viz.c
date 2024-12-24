@@ -7,7 +7,7 @@
 #define SAMPLE_TYPE short 
 #define SAMPLE_SIZE 2 
 #define NUM_SAMPLES 512 
-#define NUM_BUFS 12
+#define NUM_BUFS 32
 
 #define SCREEN_HEIGHT 480
 #define SCREEN_WIDTH 2048 
@@ -52,11 +52,18 @@ int main(int argc, char *argv[]) {
     const int pixelwidth = (SCREEN_WIDTH / NUM_SAMPLES) * BASE_PIXEL_WIDTH;
     const int pixelheight = (SCREEN_HEIGHT / NUM_SAMPLES) * BASE_PIXEL_HEIGHT;
     const float color_scale = 255. / NUM_BUFS;
+    int xs[NUM_SAMPLES] = {0};
+    for(int i = 0; i < NUM_SAMPLES; i++){
+      xs[i] = rescale(i,512,0,SCREEN_WIDTH,0);
+    }
     while (!quit) {
    
       // Read from standard input (stdin)
       bytesRead = read(STDIN_FILENO, buffer[curbuf], NUM_SAMPLES * sizeof(SAMPLE_TYPE));
-
+      SAMPLE_TYPE *sampbuf = (SAMPLE_TYPE *)buffer[curbuf];
+      for (ssize_t i = 0; i < NUM_SAMPLES; ++i) {
+        sampbuf[i] = rescale(sampbuf[i],SHRT_MAX,SHRT_MIN,SCREEN_HEIGHT,0);
+      }
       // Set render color to blue
       SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 
@@ -65,17 +72,17 @@ int main(int argc, char *argv[]) {
 
       int num = 0;
       for(int j = curbuf, num = 0; num < NUM_BUFS; j = (j + 1) % NUM_BUFS,num++){
-        SAMPLE_TYPE *sampbuf = (SAMPLE_TYPE *)buffer[j];
+        sampbuf = (SAMPLE_TYPE *)buffer[j];
         SDL_SetRenderDrawColor(renderer, color_scale * num, 0, 255 - (color_scale * num), 255);
-        for (ssize_t i = 1; i < NUM_SAMPLES; ++i) {
+        for (ssize_t i = 0; i < NUM_SAMPLES; ++i) {
 
           // Draw a red rectangle
           //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
           //fprintf(stderr,"%d ",(int)sampbuf[i]);
-          //int y = (sampbuf[i] - SHRT_MIN) * (SCREEN_HEIGHT - 0) / (SHRT_MAX - SHRT_MIN) + 0; 
-          int x = rescale(i,NUM_SAMPLES,0,SCREEN_WIDTH,0);
-          int y = rescale(sampbuf[i],SHRT_MAX,SHRT_MIN,SCREEN_HEIGHT,0);
-          //int y = sampbuf[i] + SHRT_MAX / 2 * SHRT_MAX * SCREEN_HEIGHT;
+          //int x = rescale(i,NUM_SAMPLES,0,SCREEN_WIDTH,0);
+          int x = xs[i];
+          //int y = rescale(sampbuf[i],SHRT_MAX,SHRT_MIN,SCREEN_HEIGHT,0);
+          int y = sampbuf[i];
           SDL_Rect rect = { x, y, 8, 8};
           SDL_RenderFillRect(renderer, &rect);
           //SDL_RenderDrawPoint(renderer, i, y);
